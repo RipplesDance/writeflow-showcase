@@ -1,0 +1,52 @@
+/* 文件说明：公开演示版的响应式界面；所有样式均为本地资源。 */
+:root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9eef7;background:#101522;font-synthesis:none}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px;background:radial-gradient(circle at 80% 0%,#203455 0,transparent 32%),#101522;line-height:1.55}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:1px solid #68d0b0;border-radius:10px;background:#68d0b0;color:#10221d;font-weight:700;padding:.65rem 1rem;transition:transform .15s,background .15s}
+button:hover{transform:translateY(-1px);background:#8ee6c9}
+button:disabled{cursor:wait;opacity:.55;transform:none}
+button.secondary,button.quiet{background:transparent;color:#dce9e6;border-color:#667486}
+button.secondary:hover,button.quiet:hover{background:#243348}
+button.danger{background:transparent;color:#ffb2ae;border-color:#a96060}
+button.danger:hover{background:#4b292d}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #f2cb78;outline-offset:2px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem max(4vw,1rem);border-bottom:1px solid #344055;background:#111a29}
+.brand{display:flex;align-items:center;gap:.8rem;font-weight:800;letter-spacing:.02em}
+.brand small{display:block;color:#9eb0c7;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.brand-mark{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:.65rem;background:#68d0b0;color:#11241e;font:800 1.4rem Georgia,serif}
+.top-actions{display:flex;align-items:center;gap:1rem}.language-control{display:flex;align-items:center;gap:.5rem;color:#aebdd0;font-size:.82rem}
+.language-control select{width:auto;padding:.45rem .5rem}
+.layout{max-width:1180px;margin:0 auto;padding:3.2rem max(4vw,1rem) 4rem}
+.intro{max-width:960px;margin-bottom:2rem}.eyebrow{color:#74d6b7;font-size:.73rem;font-weight:800;letter-spacing:.16em}
+h1{font-size:clamp(2.15rem,5vw,4.3rem);line-height:1.08;letter-spacing:-.045em;max-width:800px;margin:.5rem 0 1rem}
+.intro p{font-size:1.08rem;color:#b7c5d8;max-width:750px;margin:0 0 1.8rem}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.proof-grid div{display:flex;flex-direction:column;gap:.3rem;min-height:5.5rem;border:1px solid #344055;border-radius:12px;padding:.8rem;background:#172132}
+.proof-grid strong{color:#73d8b9;font-size:.75rem}.proof-grid span{font-size:.84rem;color:#dce6f3}
+.workspace{display:grid;grid-template-columns:minmax(270px,.85fr) minmax(350px,1.35fr);gap:1rem;align-items:start}
+.panel{border:1px solid #35435a;border-radius:16px;background:#192437;box-shadow:0 12px 30px #080d1740;padding:1.35rem}
+.auth-panel{max-width:550px}.panel-heading{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1.3rem}
+.step{display:grid;place-items:center;min-width:2.25rem;height:2.25rem;border:1px solid #4b8d80;border-radius:.7rem;color:#73d8b9;font-size:.78rem;font-weight:800}
+h2{font-size:1.2rem;line-height:1.25;margin:.1rem 0 .2rem}.panel-heading p{font-size:.84rem;color:#a9bad0;margin:0}
+form{display:grid;gap:.9rem}form label:not(.checkline){display:grid;gap:.35rem;font-size:.86rem;font-weight:650;color:#dbe6f3}
+input,textarea,select{width:100%;border:1px solid #53637b;border-radius:9px;color:#f1f5fb;background:#111a29;padding:.64rem .7rem}
+textarea{resize:vertical;min-height:5rem}input::placeholder,textarea::placeholder{color:#8798ad}
+.row-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.15rem}
+.chapter-list{display:grid;gap:.45rem;margin-bottom:1rem;max-height:14rem;overflow:auto}
+.chapter-list button{text-align:left;border-color:#415168;background:#223047;color:#e7eef8;font-weight:500}
+.chapter-list button.active{border-color:#75d7ba;background:#254f4b}
+.chapter-list button small{display:block;color:#b6c6d8;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.checkline{display:flex;align-items:center;gap:.6rem;color:#c0cddd;font-size:.83rem}.checkline input{width:auto;accent-color:#68d0b0}
+.output-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-top:1.4rem;padding-bottom:.5rem;color:#c5d3e5;font-size:.8rem;font-weight:750;text-transform:uppercase;letter-spacing:.08em}
+.badge{color:#72d8b8;border:1px solid #427967;border-radius:999px;padding:.18rem .6rem;font-size:.68rem;letter-spacing:0;text-transform:none}
+.output-text{min-height:10rem;border:1px solid #35435a;border-radius:11px;padding:1rem;background:#111a29;white-space:pre-wrap;overflow-wrap:anywhere;color:#e7edf6}
+.history-panel{grid-column:1/-1}.history-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.history-item{border:1px solid #3b4a61;border-radius:11px;background:#142033;padding:.9rem;min-width:0}
+.history-item header{display:flex;justify-content:space-between;gap:.7rem;color:#9fb4cb;font-size:.74rem}
+.history-item p{margin:.5rem 0 0;white-space:pre-wrap;overflow-wrap:anywhere}.history-item .history-seed{color:#9fb4cb;font-size:.81rem}
+.empty{color:#9aacc1;margin:.3rem 0}.status{min-height:1.5rem;margin:1.1rem 0 0;color:#74d6b7;font-weight:650}
+.status.error{color:#ffaaa5}footer{border-top:1px solid #344055;padding:1.3rem max(4vw,1rem);color:#899bb3;font-size:.78rem}
+[hidden]{display:none!important}
+@media(max-width:800px){.workspace{grid-template-columns:1fr}.proof-grid{grid-template-columns:repeat(2,1fr)}.history-list{grid-template-columns:1fr}.layout{padding-top:2.2rem}}
+@media(max-width:480px){.topbar{align-items:flex-start}.top-actions{flex-direction:column;align-items:flex-end;gap:.35rem}.proof-grid{gap:.5rem}.proof-grid div{min-height:6rem}.panel{padding:1rem}}

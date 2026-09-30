@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A runnable full-stack showcase of WriteFlow's chapter and streaming architecture.">
+  <title>WriteFlow · Engineering Showcase</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">W</span><span>WriteFlow <small>Engineering Showcase</small></span></div>
+    <div class="top-actions">
+      <label class="language-control"><span data-i18n="language">Language</span>
+        <select id="language" aria-label="Language"><option value="en">English</option><option value="zh">中文</option></select>
+      </label>
+      <button id="logout" class="quiet" type="button" hidden data-i18n="logout">Log out</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="intro" aria-labelledby="intro-title">
+      <div class="eyebrow" data-i18n="eyebrow">RUNNABLE PORTFOLIO EDITION</div>
+      <h1 id="intro-title" data-i18n="title">A story idea, through the full stack.</h1>
+      <p data-i18n="intro">Create a chapter, stream a short demo continuation, and revisit its saved history. The provider is deterministic: no API key or production prompt is used.</p>
+      <div class="proof-grid">
+        <div><strong>01</strong><span data-i18n="proofFrontend">Browser streaming & cancellation</span></div>
+        <div><strong>02</strong><span data-i18n="proofBackend">Authenticated Pages Functions</span></div>
+        <div><strong>03</strong><span data-i18n="proofData">User-scoped D1 persistence</span></div>
+        <div><strong>04</strong><span data-i18n="proofFailure">Provider fallback before output</span></div>
+      </div>
+    </section>
+
+    <section id="auth-panel" class="panel auth-panel" aria-labelledby="auth-title">
+      <div class="panel-heading"><span class="step">01</span><div><h2 id="auth-title" data-i18n="accountTitle">Demo account</h2><p data-i18n="accountHint">Use a made-up handle and password. No email is collected.</p></div></div>
+      <form id="auth-form">
+        <label><span data-i18n="handle">Handle</span><input id="handle" name="handle" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]{3,24}" required></label>
+        <label><span data-i18n="password">Password</span><input id="password" name="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" required></label>
+        <div class="row-actions"><button type="submit" data-action="login" data-i18n="login">Log in</button><button type="submit" data-action="register" class="secondary" data-i18n="register">Create account</button></div>
+      </form>
+    </section>
+
+    <div id="workspace" class="workspace" hidden>
+      <section class="panel chapter-panel" aria-labelledby="chapter-title">
+        <div class="panel-heading"><span class="step">02</span><div><h2 id="chapter-title" data-i18n="chapterTitle">Chapter workspace</h2><p id="signed-in-as"></p></div></div>
+        <div id="chapter-list" class="chapter-list" aria-label="Chapters"></div>
+        <form id="chapter-form">
+          <label><span data-i18n="chapterName">Chapter title</span><input id="chapter-name" maxlength="80" required></label>
+          <label><span data-i18n="premise">Chapter premise</span><textarea id="premise" maxlength="500" rows="3" required></textarea></label>
+          <div class="row-actions"><button type="submit" id="save-chapter" data-i18n="createChapter">Create chapter</button><button type="button" id="new-chapter" class="secondary" data-i18n="newChapter">New</button><button type="button" id="delete-chapter" class="danger" hidden data-i18n="deleteChapter">Delete</button></div>
+        </form>
+      </section>
+
+      <section class="panel generation-panel" aria-labelledby="generate-title">
+        <div class="panel-heading"><span class="step">03</span><div><h2 id="generate-title" data-i18n="generateTitle">Stream a continuation</h2><p data-i18n="generateHint">Select a chapter, then enter one story beat.</p></div></div>
+        <form id="generate-form">
+          <label><span data-i18n="storyBeat">Story beat</span><textarea id="story-beat" maxlength="600" rows="4" required data-i18n-placeholder="beatPlaceholder" placeholder="A visitor arrives with a letter that should not exist."></textarea></label>
+          <label class="checkline"><input id="simulate-fallback" type="checkbox"><span data-i18n="fallbackLabel">Simulate primary provider failure</span></label>
+          <div class="row-actions"><button id="generate" type="submit" data-i18n="generate">Generate demo text</button><button id="stop" type="button" class="secondary" hidden data-i18n="stop">Stop</button></div>
+        </form>
+        <div class="output-head"><span data-i18n="output">Output</span><span id="route-badge" class="badge" hidden></span></div>
+        <div id="output-text" class="output-text" aria-live="polite" data-i18n="emptyOutput">Generated text will appear here.</div>
+      </section>
+
+      <section class="panel history-panel" aria-labelledby="history-title">
+        <div class="panel-heading"><span class="step">04</span><div><h2 id="history-title" data-i18n="historyTitle">Saved history</h2><p data-i18n="historyHint">Only completed generations are stored for this account.</p></div></div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer><span data-i18n="footer">Portfolio adaptation. Production prompts, customer data and payment systems are excluded.</span></footer>
+</body>
+</html>
