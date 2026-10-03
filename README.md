@@ -1,12 +1,14 @@
 # WriteFlow — Engineering Showcase
 
-A runnable, deliberately scoped portfolio adaptation of WriteFlow, a web-fiction writing product. This repository shows one complete path through a browser UI, authenticated Cloudflare Pages Functions, D1 persistence, streamed output, provider fallback and testable background processing. It is **not** the production application or a claim that the production source is fully public.
+WriteFlow is a fiction-writing app. This repo contains a small demo with login, chapter editing, streamed generation and saved history.
 
-The generation provider here is deterministic. It makes **no external AI request**, needs **no API key**, and contains **no production writing prompt**. Toggle “Simulate primary provider failure” in the UI to see a backup route take over before output starts.
+The frontend uses plain HTML, CSS and JavaScript. Cloudflare Pages Functions handle the API requests, and D1 stores accounts, chapters and generation history.
+
+Generation uses template-based sample text, so you can run the demo without an AI API key. Select “Simulate primary provider failure” to try the backup route. The UI defaults to English; you can switch to Chinese, and the browser remembers your choice. The sample output follows the selected language.
 
 ## Run locally
 
-Requires Node.js 24 and npm. No frontend build step or framework is used.
+Use Node.js 24 and npm. There is no frontend build step.
 
 ```bash
 npm ci
@@ -14,16 +16,11 @@ npx wrangler d1 execute writeflow-showcase-local --local --file=db/schema.sql
 npm run dev
 ```
 
-Open <http://127.0.0.1:8791>. Create an invented handle and password, add a chapter, enter a story beat, then generate. In a second terminal:
+Open <http://127.0.0.1:8791>. Create a demo account with a made-up handle and password, add a chapter, enter a story beat and generate. You can stop the stream or revisit completed results in the history panel.
 
-```bash
-npm run test:all
-npm run smoke
-```
+The database ID in `wrangler.jsonc` is a local development placeholder. To deploy this demo, create a separate D1 database and update the binding.
 
-The smoke command uses the running Pages server and local D1. It creates only synthetic records and deletes its chapter afterward. `wrangler.jsonc` uses a placeholder database ID for local development; a separate Cloudflare D1 database and config are required before deployment. The compatibility date is pinned to `2026-07-15`, the newest date supported by the Wrangler runtime verified in this workspace.
-
-## Follow one request through the code
+## Request flow
 
 ```text
 frontend/app.js
@@ -33,41 +30,35 @@ frontend/app.js
   → D1 generation_history only after completion
   → /api/history → current user's saved output
 
-Optional production-style path:
+With an optional Queue binding:
   completed history → BACKGROUND_QUEUE → workers/background.js
                     → idempotent generation_stats row
 ```
 
-The optional Queue binding is not provisioned by the local demo. Its consumer and failure behavior are independently exercised by `tests/queue.test.js`; the main browser journey runs entirely with local Pages and D1.
+The local app runs without a Queue. The consumer example is in `workers/background.js`, with tests in `tests/queue.test.js`.
 
-```mermaid
-flowchart LR
-  Browser[Vanilla JS browser] --> Auth[Pages auth API]
-  Browser --> Chapters[Pages chapter API]
-  Browser --> Stream[Pages SSE generation API]
-  Auth --> D1[(Local D1)]
-  Chapters --> D1
-  Stream --> Router[Demo route fallback]
-  Router --> Browser
-  Stream --> D1
-  Stream -. optional Queue binding .-> Queue[Queue consumer]
-  Queue --> D1
+## Implementation notes
+
+- Passwords use PBKDF2, and D1 stores session token hashes rather than the tokens sent to the browser. `tests/auth.test.js` covers login, session expiry and logout.
+- A provider can fail before or during streaming. `functions/lib/provider-fallback.js` allows a backup only before the first chunk; a later failure ends the stream. `tests/provider-fallback.test.js` covers both cases and cancellation.
+- A `<think>` tag can be split across chunks. `functions/lib/output-sanitizer.js` keeps partial tag prefixes between reads so reasoning text does not reach the output. The filter tests are in `tests/provider-fallback.test.js`.
+- Chapter and history queries include the signed-in user's ID. `tests/chapters.test.js` and `tests/generate.test.js` check that another account cannot access those records.
+- The generation route saves history after the provider finishes. Cancelling during streaming leaves no history row, while text already received stays visible. `tests/generate.test.js` checks this behaviour.
+- Queue messages can arrive more than once. The consumer uses a unique history key to avoid duplicate statistics, acknowledges successful work and retries database failures. `tests/queue.test.js` covers duplicate delivery and failure handling.
+
+## Tests
+
+```bash
+npm run test:all
+npm run smoke
 ```
 
-## Engineering decisions worth inspecting
+The tests use Node's test runner and an in-memory SQLite database. CI runs these tests and builds the Pages Functions.
 
-- **Do not mix providers mid-stream.** `functions/lib/provider-fallback.js` retries only before any upstream chunk has been committed. `tests/provider-fallback.test.js` covers early failure, late failure and cancellation.
-- **Keep internal reasoning out of prose.** `functions/lib/output-sanitizer.js` retains incomplete `<think>` tag prefixes across chunks. This module comes from the private production code with a public file header added.
-- **Keep ownership in every query.** Chapter updates/deletes, generation and history reads are scoped to the authenticated user. SQLite-backed tests exercise cross-account access.
-- **Save only complete results.** Cancelled or failed streams do not create history rows; the browser keeps text it has already received. `tests/generate.test.js` checks the path.
-- **Treat Queue messages as repeatable.** The optional consumer acknowledges after success, retries on D1 failure and uses a unique history key for idempotent derived statistics.
+Run the smoke script while the local Pages server is running. It creates a test account and chapter, checks auth, streaming, fallback and history over HTTP, then deletes the chapter.
 
-## What this public edition contains
+## About this version
 
-The UI and its auth/chapter/generation routes were adapted into a smaller, independently runnable example. `workers/queue-task.js` and the reasoning filter preserve narrow production logic; provider fallback and D1 ownership rules demonstrate the same engineering constraints with safe demo configuration.
+The reasoning filter and Queue ACK/retry helper come from the main WriteFlow app. The UI, auth, chapter and generation routes are smaller implementations written for this demo.
 
-Production prompts, genre/tag rules, real model routes and credentials, customer data, billing, email flows, and the full RAG pipeline are intentionally excluded. The public demo has its own schema and must not be connected to the production D1 database.
-
-## Verification and use
-
-`npm run test:all` uses Node's built-in test runner and actual SQLite SQL semantics. CI runs the tests and compiles the Pages Functions. A local Pages + D1 smoke script covers the HTTP path. This public repository has no open-source license; code is shared for evaluation, not granted for reuse.
+Production prompts, real provider configuration, user data, billing, email workflows and RAG code are not included. This repo is shared for review and interviews; no licence file is included.
