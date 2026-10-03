@@ -64,7 +64,7 @@ flowchart LR
 
 ## What this public edition contains
 
-The UI and its auth/chapter/generation routes were adapted into a smaller, independently runnable example. `workers/queue-task.js` and the reasoning filter preserve narrow production logic; provider fallback and D1 ownership rules demonstrate the same engineering constraints with safe demo configuration. See [PUBLIC_SCOPE.md](PUBLIC_SCOPE.md) for the file-level boundary.
+The UI and its auth/chapter/generation routes were adapted into a smaller, independently runnable example. `workers/queue-task.js` and the reasoning filter preserve narrow production logic; provider fallback and D1 ownership rules demonstrate the same engineering constraints with safe demo configuration.
 
 Production prompts, genre/tag rules, real model routes and credentials, customer data, billing, email flows, and the full RAG pipeline are intentionally excluded. The public demo has its own schema and must not be connected to the production D1 database.
 
